@@ -11,3 +11,9 @@ brew install swi-prolog
 ```
 swipl
 ```
+
+```
+append([1], [2], [1, 2]).
+
+sum_list([1, 2, 3], 6).
+```
