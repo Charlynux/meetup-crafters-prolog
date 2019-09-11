@@ -12,7 +12,9 @@ brew install swi-prolog
 swipl
 ```
 
-## Quelques faits
+## Exemples
+
+### Quelques faits
 
 ```
 [1, 2, 3] = [1, 2, 3].
@@ -26,7 +28,7 @@ append([1], [2], [1, 2]).
 sum_list([1, 2, 3], 6).
 ```
 
-## Quelques interrogations
+### Quelques interrogations
 
 ```
 [1, 2, 3] = [1, 2, A].
@@ -46,7 +48,7 @@ append(L1, L2, [1, 2]).
 
 Tapez `;` ou Espace pour avoir les différentes solutions une à une.
 
-## Création de nouveaux faits
+### Création de nouveaux faits
 
 ```
 ['parents'].
@@ -64,7 +66,7 @@ parent(robert, A).
 parent(robert, A), parent(geraldine, A).
 ```
 
-## Rule récursive
+### Rule récursive
 
 ```
 ['length'].
@@ -80,7 +82,7 @@ Ne marche pas...
 list_length(Liste, 4).
 ```
 
-## Combinaison de facts et rules
+### Combinaison de facts et rules
 
 ```
 ['ancestors'].
@@ -101,3 +103,9 @@ ancestor(robert_father_father, A).
 ```
 ancestor(A, robin).
 ```
+
+## Exemple avancé
+
+Pour le problème des N Dames, représentation d'un échiquier en Prolog.
+
+https://swish.swi-prolog.org/example/queens.pl
