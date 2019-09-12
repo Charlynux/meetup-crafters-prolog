@@ -2,36 +2,24 @@ couleur(jaune).
 couleur(rouge).
 couleur(vert).
 
-sont_couleurs([]).
-sont_couleurs([H|L]) :-
-    couleur(H),
-    sont_couleurs(L).
+sont_couleurs(L) :-
+    maplist(couleur, L).
 
 all_differents(A, B, C) :-
     not(A = B),
     not(B = C),
     not(A = C).
 
-voisins([A, B, C], X, Y) :-
-    once(
-        (A = X, B = Y);
-        (A = Y, B = X);
-        (C = X, B = Y);
-        (C = Y, B = X)
-    ).
+voisins([X, Y, _], X, Y).
+voisins([_, X, Y], X, Y).
+voisins([Y, X, _], X, Y).
+voisins([_, Y, X], X, Y).
 
 pas_voisins([A, B, C], X, Y) :-
 % https://www.swi-prolog.org/pldoc/doc_for?object=not/1
 % Retained for compatibility only. New code should use \+/1.
     not(voisins([A, B, C], X, Y)).
-/**
-est_a_gauche(L, X, Y) :-
-    once(
-        (L = [X, Y, _]);
-        (L = [X, _, Y]);
-        (L = [_, X, Y])
-    ).
-*/
+
 est_a_gauche([X, Y, _], X, Y).
 est_a_gauche([X, _, Y], X, Y).
 est_a_gauche([_, X, Y], X, Y).
