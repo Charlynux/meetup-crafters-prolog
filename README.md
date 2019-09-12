@@ -104,8 +104,26 @@ ancestor(robert_father_father, A).
 ancestor(A, robin).
 ```
 
-## Exemple avancé
+## Exemples
+
+### Représentation visuelle
 
 Pour le problème des N Dames, représentation d'un échiquier en Prolog.
 
 https://swish.swi-prolog.org/example/queens.pl
+
+### Interpréteur Prolog
+
+La première version du langage Erlang était écrite en Prolog.
+
+http://blog.erlang.org/beam-compiler-history#the-prolog-interpreter
+
+### Yarn V2
+
+Pour sa v2, Yarn intègre un système de contraintes qui s'appuie sur Prolog.
+
+https://next.yarnpkg.com/features/constraints
+
+https://youtu.be/1Bk8-1ikXiU?t=1543
+
+Merci à Sébastien Elet (@SebastienElet) pour cette information
