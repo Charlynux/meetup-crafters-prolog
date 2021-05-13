@@ -1,1 +1,2 @@
-{:deps {org.clojure/core.logic {:mvn/version "1.0.0"}}}
+{:deps {org.clojure/core.logic {:mvn/version "1.0.0"}
+        com.cognitect/transcriptor {:mvn/version "0.1.5"}}}

@@ -1,7 +1,8 @@
 (ns meetup_crafters.prolog.logicville
   (:refer-clojure :exclude [==])
   (:require [clojure.core.logic
-             :refer [run* == != membero lvar defne everyg fresh]]))
+             :refer [run* == != membero lvar defne everyg fresh]]
+            [cognitect.transcriptor :as xr :refer (check!)]))
 
 (defne couleur
   [c]
@@ -34,28 +35,33 @@
  "Carte 1"
  (== :vert D)
  (== :jaune G))
+(check! #{(list [:jaune :rouge :vert])})
 
 (solution_carte
  "Carte 2"
  (== :vert G)
  (!= :rouge M))
+(check! #{(list [:vert :jaune :rouge])})
 
 (solution_carte
  "Carte 3"
  (!= :vert M)
  (!= :jaune M)
  (!= :vert D))
+(check! #{(list [:vert :rouge :jaune])})
 
 (solution_carte
  "Carte 4"
  (!= :vert G)
  (!= :rouge M)
  (voisins l :rouge :jaune))
+(check! #{(list [:rouge :jaune :vert])})
 
 (solution_carte
  "Carte 5"
  (== :rouge G)
  (voisins l :vert :rouge))
+(check! #{(list [:rouge :vert :jaune])})
 
 (defne pas-voisins [l a b]
   ([[a _ b] _ _])
@@ -65,11 +71,13 @@
  "Carte 7"
  (== :rouge D)
  (pas-voisins l :rouge :vert))
+(check! #{(list [:vert :jaune :rouge])})
 
 (solution_carte
  "Carte 8"
  (pas-voisins l :rouge :vert)
  (!= :vert G))
+(check! #{(list [:rouge :jaune :vert])})
 
 (defne est-a-gauche [l a b]
   ([[a . tail] _ _]
@@ -83,3 +91,4 @@
  (voisins l :rouge :jaune)
  (voisins l :jaune :vert)
  (est-a-gauche l :vert :rouge))
+(check! #{(list [:vert :jaune :rouge])})
