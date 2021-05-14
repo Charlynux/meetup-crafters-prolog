@@ -1,7 +1,7 @@
 (ns meetup_crafters.prolog.logicville
   (:refer-clojure :exclude [==])
   (:require [clojure.core.logic
-             :refer [run* == != membero lvar defne everyg fresh matche succeed fail]]
+             :refer [run* == != membero lvar defne everyg fresh matche distincto]]
             [clojure.core.logic.fd :as fd]
             [cognitect.transcriptor :as xr :refer (check!)]))
 
@@ -13,9 +13,6 @@
 (defne sont_couleurs
   [houses]
   ([houses] (everyg couleur houses)))
-
-(defne tous_differents [houses]
-  ([[A B C]] (!= A B) (!= A C) (!= B C)))
 
 (defne voisins [houses a b]
   ([[a b . tail] _ _])
@@ -30,10 +27,10 @@
   [card-name & rules]
   `(run* [~'l]
      (fresh [~'G ~'M ~'D]
-       (== ~'l [~'G ~'M ~'D])
-       ~@rules)
-     (tous_differents ~'l)
-     (sont_couleurs ~'l)))
+       (== ~'l [~'G ~'M ~'D]))
+     (distincto ~'l)
+     (sont_couleurs ~'l)
+     ~@rules))
 
 (solution_carte
  "Carte 1"
@@ -86,7 +83,9 @@
 (solution_carte
  "Carte 8"
  (pas-voisins l :rouge :vert)
- (!= :vert G))
+ (matche [l]
+         ([[G _ _]]
+          (!= G :vert))))
 (check! #{(list [:rouge :jaune :vert])})
 
 (defne est-a-gauche [l a b]
