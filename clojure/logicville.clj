@@ -1,7 +1,8 @@
 (ns meetup_crafters.prolog.logicville
   (:refer-clojure :exclude [==])
   (:require [clojure.core.logic
-             :refer [run* == != membero lvar defne everyg fresh]]
+             :refer [run* == != membero lvar defne everyg fresh matche succeed fail]]
+            [clojure.core.logic.fd :as fd]
             [cognitect.transcriptor :as xr :refer (check!)]))
 
 (defne couleur
@@ -10,17 +11,20 @@
    (membero c [:jaune :rouge :vert])))
 
 (defne sont_couleurs
-  [l]
-  ([l] (everyg couleur l)))
+  [houses]
+  ([houses] (everyg couleur houses)))
 
-(defne tous_differents [l]
+(defne tous_differents [houses]
   ([[A B C]] (!= A B) (!= A C) (!= B C)))
 
-(defne voisins [l a b]
-  ([[a b _] _ _])
-  ([[b a _] _ _])
-  ([[_ a b] _ _])
-  ([[_ b a] _ _]))
+(defne voisins [houses a b]
+  ([[a b . tail] _ _])
+  ([[b a . tail] _ _])
+  ([[_ . tail] _ _] (voisins tail a b)))
+
+(defmacro place [houses hints]
+  `(matche [~houses]
+           ([~hints] succeed)))
 
 (defmacro solution_carte
   [card-name & rules]
@@ -33,33 +37,39 @@
 
 (solution_carte
  "Carte 1"
- (== :vert D)
- (== :jaune G))
+ (place l [_ _ :vert])
+ (place l [:jaune _ _]))
 (check! #{(list [:jaune :rouge :vert])})
 
 (solution_carte
  "Carte 2"
- (== :vert G)
- (!= :rouge M))
+ (place l [:vert _ _])
+ (matche [l]
+         ([[_ X _]]
+          (!= X :rouge))))
 (check! #{(list [:vert :jaune :rouge])})
 
 (solution_carte
  "Carte 3"
- (!= :vert M)
- (!= :jaune M)
- (!= :vert D))
+ (matche [l]
+         ([[_ M D]]
+          (!= M :vert)
+          (!= M :jaune)
+          (!= D :vert))))
 (check! #{(list [:vert :rouge :jaune])})
 
 (solution_carte
  "Carte 4"
- (!= :vert G)
- (!= :rouge M)
+ (matche [l]
+         ([[G M _]]
+          (!= G :vert)
+          (!= M :rouge)))
  (voisins l :rouge :jaune))
 (check! #{(list [:rouge :jaune :vert])})
 
 (solution_carte
  "Carte 5"
- (== :rouge G)
+ (place l [:rouge _ _])
  (voisins l :vert :rouge))
 (check! #{(list [:rouge :vert :jaune])})
 
@@ -69,7 +79,7 @@
 
 (solution_carte
  "Carte 7"
- (== :rouge D)
+ (place l [_ _ :rouge])
  (pas-voisins l :rouge :vert))
 (check! #{(list [:vert :jaune :rouge])})
 
