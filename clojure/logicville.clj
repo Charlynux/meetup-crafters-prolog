@@ -101,3 +101,39 @@
  (voisins l :jaune :vert)
  (est-a-gauche l :vert :rouge))
 (check! #{(list [:vert :jaune :rouge])})
+
+;; Carte 25 - Première carte avec des animaux.
+
+(defne voisins-humain-animal
+  [maisons niches humain animal]
+  ([[humain _ . _]
+    [_ animal . _] _ _])
+  ([[_ humain . _]
+    [animal _ . _] _ _])
+  ([[_ . maisons-tail]
+    [_ . niches-tail]_ _]
+   (voisins-humain-animal maisons-tail niches-tail humain animal)))
+
+(run* [maisons niches]
+  ;; Règles de base
+  (fresh [G M D]
+    (== maisons [G M D]))
+  (fresh [G M D]
+    (== niches [G M D]))
+  (distincto maisons)
+  (sont_couleurs maisons)
+  (distincto niches)
+  (everyg #(membero % [:oiseau :tortue :lapin]) niches)
+
+  ;; Règles de la carte
+  (voisins maisons :vert :jaune)
+
+  (place niches [:oiseau _ _])
+
+  (voisins-humain-animal
+   maisons niches
+   :jaune :tortue)
+
+  (place maisons [_ _ :vert]))
+(check! #{(list [[:rouge :jaune :vert]
+                 [:oiseau :lapin :tortue]])})
