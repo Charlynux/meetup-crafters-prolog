@@ -1,18 +1,27 @@
 (ns meetup_crafters.prolog.logicville
   (:refer-clojure :exclude [==])
   (:require [clojure.core.logic
-             :refer [run* == != membero lvar defne everyg fresh matche distincto]]
+             :refer [run* == != membero lvar defne everyg fresh matche distincto all succeed]]
             [clojure.core.logic.fd :as fd]
             [cognitect.transcriptor :as xr :refer (check!)]))
 
-(defne couleur
-  [c]
-  ([c]
-   (membero c [:jaune :rouge :vert])))
+(defn conditions-domaine [domaine xs n]
+  (let [schema (repeatedly n lvar)
+        domaine-restreint (take n domaine)]
+    (all
+     (== xs schema)
+     (everyg #(membero % domaine-restreint) xs)
+     (distincto xs))))
 
-(defne sont_couleurs
-  [houses]
-  ([houses] (everyg couleur houses)))
+(def COULEURS [:jaune :rouge :vert :blanc :bleu])
+
+(defn conditions-maisons [maisons nombre]
+  (conditions-domaine COULEURS maisons nombre))
+
+(def ANIMAUX [:oiseau :tortue :lapin :chien :chat])
+
+(defn conditions-niches [niches nombre]
+  (conditions-domaine ANIMAUX niches nombre))
 
 (defne voisins [houses a b]
   ([[a b . tail] _ _])
@@ -26,10 +35,7 @@
 (defmacro solution_carte
   [card-name & rules]
   `(run* [~'l]
-     (fresh [~'G ~'M ~'D]
-       (== ~'l [~'G ~'M ~'D]))
-     (distincto ~'l)
-     (sont_couleurs ~'l)
+     (conditions-maisons ~'l 3)
      ~@rules))
 
 (solution_carte
@@ -116,14 +122,8 @@
 
 (run* [maisons niches]
   ;; Règles de base
-  (fresh [G M D]
-    (== maisons [G M D]))
-  (fresh [G M D]
-    (== niches [G M D]))
-  (distincto maisons)
-  (sont_couleurs maisons)
-  (distincto niches)
-  (everyg #(membero % [:oiseau :tortue :lapin]) niches)
+  (conditions-maisons maisons 3)
+  (conditions-niches niches 3)
 
   ;; Règles de la carte
   (voisins maisons :vert :jaune)
