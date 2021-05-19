@@ -1,7 +1,9 @@
 (ns meetup_crafters.prolog.logicville
   (:refer-clojure :exclude [==])
   (:require [clojure.core.logic
-             :refer [run* == != membero lvar defne everyg fresh matche distincto all succeed]]
+             :refer [run run* == != membero lvar defne
+                     everyg fresh matche distincto all succeed
+                     conde]]
             [clojure.core.logic.fd :as fd]
             [cognitect.transcriptor :as xr :refer (check!)]))
 
@@ -137,3 +139,47 @@
   (place maisons [_ _ :vert]))
 (check! #{(list [[:rouge :jaune :vert]
                  [:oiseau :lapin :tortue]])})
+
+;; Carte 43
+(run* [maisons]
+  ;; Règles de base
+  (conditions-maisons maisons 4)
+
+  ;; Règles de la carte
+  (est-a-gauche maisons :jaune :rouge)
+  (place maisons [_ _ :blanc _])
+  (voisins maisons :rouge :jaune))
+
+(defne meme-maison [maisons niches humain animal]
+  ([[humain . _]
+    [animal . _] _ _])
+  ([[a . maisons-tail]
+    [b . niches-tail]_ _]
+   (conde
+    [(!= a humain)]
+    [(!= b animal)])
+   (meme-maison maisons-tail niches-tail humain animal)))
+
+;; Carte 49
+(run 1 [maisons niches]
+  ;; Règles de base
+  (conditions-maisons maisons 5)
+  (conditions-niches niches 5)
+
+  ;; Règles de la carte
+  (place niches [_ _ _ :lapin _])
+  (place maisons [:jaune _ _ _ _])
+  (place niches [_ _ :chat _ _])
+
+  (voisins-humain-animal
+   maisons niches :blanc :lapin)
+  (voisins-humain-animal
+   maisons niches :rouge :chien)
+
+  (meme-maison
+   maisons niches :bleu :chien)
+
+  (est-a-gauche niches :chat :tortue))
+;; LONG !!!
+;; => ([(:jaune :bleu :rouge :vert :blanc)
+;;      (:oiseau :chien :chat :lapin :tortue)])
